@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Model\Repository;
 
@@ -14,47 +14,83 @@ class Product
      * @param int[] $ids
      * @return Entity\Product[]
      */
+
+
     public function search(array $ids = []): array
     {
         if (!count($ids)) {
             return [];
         }
-
         $productList = [];
-        $new = new Entity\Product(1,'test',3);
-//        var_export($ids);
-//        var_export($new);
-//        var_dump($productList);
+//        $products = new Entity\Product();
+        $products = new Entity\Product(1, 'test', 200);
+
         foreach ($this->getDataFromSource(['id' => $ids]) as $item) {
-            var_export($item);
-            $productList[] = new Entity\Product($item['id'], $item['name'], $item['price']);
-            $test = clone $new;
-//            var_dump($productList);
-//            var_dump($test);exit;
-//
+            $cloneProducts = clone $products;
+            $cloneProducts->setId($item['id']);
+            $cloneProducts->setName($item['name']);
+            $cloneProducts->setPrice($item['price']);
 
-
-//            var_dump("tets = " . $test);
+            $productList[] = $cloneProducts;
         }
-
-//return $test;
         return $productList;
     }
+
+
+//    public function search(array $ids = []): array
+//    {
+//        if (!count($ids)) {
+//            return [];
+//        }
+//        $productList = [];
+//        foreach ($this->getDataFromSource(['id' => $ids]) as $item) {
+//            $productList[] = new Entity\Product($item['id'], $item['name'], $item['price']);
+//        }
+//        return $productList;
+//    }
 
     /**
      * Получаем все продукты
      *
      * @return Entity\Product[]
      */
+//    public function fetchAll(): array
+//    {
+//        $productList = [];
+//        foreach ($this->getDataFromSource() as $item) {
+//            $productList[] = new Entity\Product($item['id'], $item['name'], $item['price']);
+//        }
+////var_dump($productList);
+//        return $productList;
+//    }
+
     public function fetchAll(): array
     {
+
         $productList = [];
+
+//        $products = new Entity\Product();
+//        $products = new Entity\Product($id, $name,$price);
+        $products = new Entity\Product(1, 'test', 200);
+
+
         foreach ($this->getDataFromSource() as $item) {
-            $productList[] = new Entity\Product($item['id'], $item['name'], $item['price']);
+
+            $cloneProducts = clone $products;
+            $cloneProducts->setId($item['id']);
+            $cloneProducts->setName($item['name']);
+            $cloneProducts->setPrice($item['price']);
+
+            $productList[] = $cloneProducts;
+
         }
 
+//        var_dump($productList);
+
+//        var_dump($new);
         return $productList;
     }
+
 
     /**
      * Получаем продукты из источника данных

@@ -50,7 +50,7 @@ class ProductController
     public function listAction(Request $request): Response
     {
 
-        $productList = (new Product())->getAll($request->query->get('sort'));
+        $productList = (new Product())->getAll($request->query->get('sort', ''));
 
 
 
