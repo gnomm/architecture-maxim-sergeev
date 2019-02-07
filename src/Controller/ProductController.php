@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Controller;
 
+use function Couchbase\defaultDecoder;
 use Framework\Render;
-use Service\Order\Basket;
+use Service\Order\Order;
 use Service\Product\Product;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,19 +24,18 @@ class ProductController
      */
     public function infoAction(Request $request, $id): Response
     {
-        $basket = (new Basket($request->getSession()));
-
+        $product = new Product();
         if ($request->isMethod(Request::METHOD_POST)) {
-            $basket->addProduct((int)$request->request->get('product'));
+            (new Order($request->getSession()))->addProduct((int)$request->request->get('product'));
         }
 
-        $productInfo = (new Product())->getInfo((int)$id);
+        $productInfo = $product->getOne((int)$id);
 
         if ($productInfo === null) {
             return $this->render('error404.html.php');
         }
 
-        $isInBasket = $basket->isProductInBasket($productInfo->getId());
+        $isInBasket = (new Order($request->getSession()))->isProductInBasket($productInfo->getId());
 
         return $this->render('product/info.html.php', ['productInfo' => $productInfo, 'isInBasket' => $isInBasket]);
     }
@@ -49,9 +49,13 @@ class ProductController
      */
     public function listAction(Request $request): Response
     {
-//        echo 'test';
-//        var_dump('ss');
-        $productList = (new Product())->getAll($request->query->get('sort', ''));
+
+        $productList = (new Product())->getAll($request->query->get('sort'));
+
+
+
+//        $productList = (new Product())->getAll($request->query->get('sort', ''));
+
 
         return $this->render('product/list.html.php', ['productList' => $productList]);
     }

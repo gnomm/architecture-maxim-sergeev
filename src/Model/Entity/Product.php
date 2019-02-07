@@ -68,4 +68,11 @@ class Product
             'price' => $this->price,
         ];
     }
+
+    public function __clone()
+    {
+//        $this->id =  $this->id;
+//        $this->name = $this->name;
+//        $this->price = $this->price;
+    }
 }

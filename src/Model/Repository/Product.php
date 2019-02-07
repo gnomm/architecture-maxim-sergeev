@@ -21,10 +21,23 @@ class Product
         }
 
         $productList = [];
+        $new = new Entity\Product(1,'test',3);
+//        var_export($ids);
+//        var_export($new);
+//        var_dump($productList);
         foreach ($this->getDataFromSource(['id' => $ids]) as $item) {
+            var_export($item);
             $productList[] = new Entity\Product($item['id'], $item['name'], $item['price']);
+            $test = clone $new;
+//            var_dump($productList);
+//            var_dump($test);exit;
+//
+
+
+//            var_dump("tets = " . $test);
         }
 
+//return $test;
         return $productList;
     }
 

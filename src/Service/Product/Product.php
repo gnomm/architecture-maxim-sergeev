@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Service\Product;
 
@@ -9,15 +9,26 @@ use Model;
 class Product
 {
     /**
-     * Получаем информацию по конкретному продукту
+     * Получаем конкретный продукт
      *
      * @param int $id
      * @return Model\Entity\Product|null
      */
-    public function getInfo(int $id): ?Model\Entity\Product
+    public function getOne(int $id): ?Model\Entity\Product
     {
         $product = $this->getProductRepository()->search([$id]);
         return count($product) ? $product[0] : null;
+    }
+
+    /**
+     * Получаем коллекцию продуктов
+     *
+     * @param int[] $ids
+     * @return Model\Entity\Product[]
+     */
+    public function getCollection(array $ids): array
+    {
+        return $this->getProductRepository()->search($ids);
     }
 
     /**
@@ -31,12 +42,45 @@ class Product
     {
         $productList = $this->getProductRepository()->fetchAll();
 
-        // Применить паттерн Стратегия
-        // $sortType === 'price'; // Сортировка по цене
-        // $sortType === 'name'; // Сортировка по имени
+//        var_dump($productList);
 
-        return $productList;
+//        var_dump($productList);
+        switch ($sortType) {
+            case 'price':
+                $strategy = new Sorter(new SorterByPrice());
+                break;
+
+            case 'name':
+//                new Sorter(new SorterByName());
+                $strategy = new Sorter(new SorterByName());
+                break;
+
+            default:
+                $strategy = new Sorter(new SorterByName());
+        }
+
+        return $strategy->sort($productList);
+//        return $productSorter->sort($productList);
     }
+
+
+//    /**
+//     * Получаем все продукты
+//     *
+//     * @param string $sortType
+//     *
+//     * @return Model\Entity\Product[]
+//     */
+//    public function getAll(string $sortType): array
+//    {
+////        echo 'ssss';exit;
+//        $productList = $this->getProductRepository()->fetchAll();
+//        // Применить паттерн Стратегия
+//        // $sortType === 'price'; // Сортировка по цене
+//        // $sortType === 'name'; // Сортировка по имени
+//        return $productList;
+//    }
+
 
     /**
      * Фабричный метод для репозитория Product
