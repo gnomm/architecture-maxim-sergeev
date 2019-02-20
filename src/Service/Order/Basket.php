@@ -74,6 +74,7 @@ class Basket
         return $this->getProductRepository()->search($productIds);
     }
 
+
     /**
      * Оформление заказа
      *
